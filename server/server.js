@@ -39,6 +39,10 @@ async function start() {
   app.use(cookieParser());
   app.use(mongoSanitize());
 
+  app.get("/", (_req, res) => {
+    res.send("Trendora Backend is running successfully!");
+  });
+
   app.get("/api/health", (_req, res) => {
     res.json({ status: "ok" });
   });
