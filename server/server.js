@@ -19,6 +19,30 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 const PORT = process.env.PORT || 5000;
 const CLIENT_URL = process.env.CLIENT_URL || "https://trendora-pi.vercel.app";
 
+// CORS configuration - support both current and preview URLs
+const corsOptions = {
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      "https://trendora-pi.vercel.app",
+      "http://localhost:5173",
+      "http://localhost:3000",
+      // Allow any vercel.app preview deployment
+      /\.vercel\.app$/,
+    ];
+    
+    if (!origin || allowedOrigins.some(allowedOrigin => 
+      typeof allowedOrigin === 'string' 
+        ? origin === allowedOrigin 
+        : allowedOrigin.test(origin)
+    )) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+
 async function start() {
   if (!process.env.JWT_SECRET) {
     throw new Error("JWT_SECRET must be set in .env");
@@ -29,12 +53,7 @@ async function start() {
   const app = express();
 
   app.use(helmet());
-  app.use(
-    cors({
-      origin: CLIENT_URL,
-      credentials: true,
-    })
-  );
+  app.use(cors(corsOptions));
   app.use(express.json({ limit: "10mb" }));
   app.use(cookieParser());
   app.use(mongoSanitize());
