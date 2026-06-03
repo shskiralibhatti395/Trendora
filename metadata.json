@@ -1,0 +1,6 @@
+{
+  "name": "Trendora",
+  "description": "An advanced, premium-designed, full-stack E-Commerce Platform featuring real-time analytics, order tracking, admin dashboard, cart persistence, and beautiful animations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
