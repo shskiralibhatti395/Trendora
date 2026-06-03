@@ -14,12 +14,16 @@ export async function connectDB() {
   while (attempt < MAX_RETRIES) {
     try {
       await mongoose.connect(uri);
+      console.log("✅ MongoDB Connect Ho Gaya!");
       return;
     } catch (error) {
       attempt += 1;
+      console.log(`❌ Connection attempt ${attempt} failed:`, error.message);
       if (attempt >= MAX_RETRIES) {
+        console.error("❌ MongoDB Connection Failed after", MAX_RETRIES, "attempts");
         throw error;
       }
+      console.log(`⏳ Retrying in ${RETRY_DELAY_MS}ms...`);
       await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
     }
   }
