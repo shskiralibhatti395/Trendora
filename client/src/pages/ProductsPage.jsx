@@ -283,7 +283,7 @@ export const ProductsPage = ({
               </div> : <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {products.map((prod) => <div
     key={prod.id}
-    className="group relative rounded-2xl border border-gray-100 dark:border-neutral-800/40 bg-white dark:bg-neutral-955 p-3 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
+    className="group relative rounded-2xl border border-gray-100 dark:border-neutral-800/40 bg-white dark:bg-neutral-800 p-3 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
   >
                     
                     {
@@ -320,7 +320,7 @@ export const ProductsPage = ({
     /* Metadata Header */
   }
                     <div className="mt-3 flex items-center justify-between">
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-450 dark:text-neutral-500 font-mono">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-450 dark:text-neutral-300 font-mono">
                         {prod.brand}
                       </span>
                       <span className="flex items-center gap-0.5 text-xs text-amber-500 font-bold">
