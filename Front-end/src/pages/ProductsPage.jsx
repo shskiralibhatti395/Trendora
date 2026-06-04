@@ -34,7 +34,6 @@ export const ProductsPage = ({
   useEffect(() => {
     if (selectedCategory) {
       setCategory(selectedCategory);
-      setSelectedCategory("");
     }
   }, [selectedCategory]);
   const loadProducts = async (isAppend = false) => {
