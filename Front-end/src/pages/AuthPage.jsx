@@ -545,17 +545,7 @@ export const AuthPage = ({ setTab }) => {
             <div className="flex justify-start">
               <button
     type="button"
-    onClick={async () => {
-      setLoading(true);
-      const result = await login("admin@trendora.com", "admin123");
-      if (result?.success) {
-        setTab("admin");
-      } else {
-        showToast("Administrative verification failed. Invalid credentials.", "error");
-      }
-      setLoading(false);
-    }}
-    disabled={loading}
+    onClick={() => setActiveMode("admin-login")}
     className="py-2.5 px-4 border border-amber-200/50 dark:border-amber-951/30 bg-amber-400/5 text-amber-600 dark:text-amber-450 rounded-xl hover:bg-amber-400/10 transition font-bold text-[11px] text-center"
   >
                 Sign In Admin
