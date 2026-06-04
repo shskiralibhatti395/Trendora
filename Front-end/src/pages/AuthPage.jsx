@@ -10,10 +10,7 @@ export const AuthPage = ({ setTab }) => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
-  const [adminUsername, setAdminUsername] = useState("");
-  const [adminPassword, setAdminPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showAdminPassword, setShowAdminPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [otpCode, setOtpCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -22,30 +19,6 @@ export const AuthPage = ({ setTab }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    if (activeMode === "admin-login") {
-      const trimmedUsername = adminUsername.trim();
-      const trimmedPassword = adminPassword.trim();
-      if (!trimmedUsername || !trimmedPassword) {
-        showToast("Admin Username and Password are required.", "error");
-        setLoading(false);
-        return;
-      }
-      const responseStatus = await login(trimmedUsername, trimmedPassword);
-      if (responseStatus?.success) {
-        const loggedUser = responseStatus.user;
-        if (loggedUser?.role === "admin") {
-          showToast("Administrative authorization granted. Redirecting to console...", "success");
-          setTab("admin");
-        } else {
-          showToast("This account does not have administrative privileges.", "error");
-          setTab("home");
-        }
-      } else {
-        showToast("Administrative verification failed. Invalid credentials.", "error");
-      }
-      setLoading(false);
-      return;
-    }
     const trimmedEmail = email.trim();
     if (!trimmedEmail) {
       showToast("Please specify your account email address.", "error");
@@ -230,7 +203,7 @@ export const AuthPage = ({ setTab }) => {
             {activeMode === "forgot" && "Reset Secure Access"}
             {activeMode === "reset-password" && "Configure New Password"}
             {activeMode === "verify-email" && "Verify Account Email"}
-            {activeMode === "admin-login" && "Verify Security Credentials"}
+
           </h2>
           <p className="text-[11px] text-neutral-450 dark:text-neutral-500 font-medium px-4">
             {activeMode === "login" && "Connect to complete and authorize payment allocations on Trendora."}
@@ -238,7 +211,6 @@ export const AuthPage = ({ setTab }) => {
             {activeMode === "forgot" && "Provide your account email address to dispatch a simulated reset OTP."}
             {activeMode === "reset-password" && "Apply verification security parameters to restore session credentials."}
             {activeMode === "verify-email" && "Activate fully verified logistics and safe checkout coordinates."}
-            {activeMode === "admin-login" && "Verify administrative security parameters to restore system control credentials."}
           </p>
         </div>
 
@@ -315,7 +287,7 @@ export const AuthPage = ({ setTab }) => {
               </div>
             </div>}
 
-          {activeMode !== "register" && (activeMode === "login" || activeMode === "forgot" || activeMode === "reset-password") && activeMode !== "admin-login" && <div className="space-y-1.5">
+          {activeMode !== "register" && (activeMode === "login" || activeMode === "forgot" || activeMode === "reset-password") && <div className="space-y-1.5">
               <label className="text-[10px] font-bold text-neutral-455 uppercase tracking-widest font-mono">Email Address</label>
               <div className="relative">
                 <input
@@ -435,44 +407,6 @@ export const AuthPage = ({ setTab }) => {
               </div>
             </div>}
 
-          {activeMode === "admin-login" && <>
-              <div className="space-y-1.5 animate-fade">
-                <label className="text-[10px] font-bold text-neutral-455 uppercase tracking-widest font-mono">Admin Username</label>
-                <div className="relative">
-                  <input
-    type="text"
-    placeholder="Enter Admin Email or Username"
-    value={adminUsername}
-    onChange={(e) => setAdminUsername(e.target.value)}
-    className="w-full rounded-xl px-3.5 py-2.5 pl-10 font-medium transition-colors custom-input"
-  />
-                  <Mail className="absolute left-3.5 top-3 w-4.5 text-neutral-405" />
-                </div>
-              </div>
-
-              <div className="space-y-1.5 animate-fade">
-                <label className="text-[10px] font-bold text-neutral-455 uppercase tracking-widest font-mono">Admin Password</label>
-                <div className="relative">
-                  <input
-    type={showAdminPassword ? "text" : "password"}
-    placeholder="••••••••"
-    value={adminPassword}
-    onChange={(e) => setAdminPassword(e.target.value)}
-    className="w-full rounded-xl px-3.5 py-2.5 pl-10 pr-10 font-medium transition-colors custom-input"
-  />
-                  <Key className="absolute left-3.5 top-3 w-4.5 text-neutral-405" />
-                  <button
-    type="button"
-    onClick={() => setShowAdminPassword(!showAdminPassword)}
-    className="absolute right-3.5 top-3 text-neutral-405 hover:text-neutral-700 dark:hover:text-neutral-300 transition"
-    aria-label="Toggle password visibility"
-  >
-                    {showAdminPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
-                  </button>
-                </div>
-              </div>
-            </>}
-
           <button
     type="submit"
     disabled={loading}
@@ -486,7 +420,6 @@ export const AuthPage = ({ setTab }) => {
                 {activeMode === "forgot" && "Send Security Reset Code"}
                 {activeMode === "reset-password" && "Submit New Password"}
                 {activeMode === "verify-email" && "Verify Account Activation"}
-                {activeMode === "admin-login" && "Verify Administrative Credentials"}
               </>}
           </button>
 
@@ -545,7 +478,7 @@ export const AuthPage = ({ setTab }) => {
             <div className="flex justify-start">
               <button
     type="button"
-    onClick={() => setActiveMode("admin-login")}
+    onClick={() => setActiveMode("login")}
     className="py-2.5 px-4 border border-amber-200/50 dark:border-amber-951/30 bg-amber-400/5 text-amber-600 dark:text-amber-450 rounded-xl hover:bg-amber-400/10 transition font-bold text-[11px] text-center"
   >
                 Sign In Admin
