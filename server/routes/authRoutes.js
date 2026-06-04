@@ -22,7 +22,7 @@ const router = express.Router();
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: 200,
   message: { message: "Too many attempts. Try again later." },
   standardHeaders: true,
   legacyHeaders: false,
