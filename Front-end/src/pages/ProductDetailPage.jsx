@@ -71,7 +71,8 @@ export const ProductDetailPage = ({
     }
   };
   if (isLoading) {
-    return <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 animate-pulse space-y-8">
+    return <div className="bg-white dark:bg-neutral-900 min-h-screen">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 animate-pulse space-y-8">
         <div className="h-6 bg-neutral-200 dark:bg-neutral-800 rounded w-24" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           <div className="aspect-square bg-neutral-200 dark:bg-neutral-800 rounded-3xl" />
@@ -82,16 +83,19 @@ export const ProductDetailPage = ({
             <div className="h-10 bg-neutral-200 dark:bg-neutral-800 rounded w-1/3" />
           </div>
         </div>
-      </div>;
+      </div>
+    </div>;
   }
   if (!product) {
-    return <div className="max-w-7xl mx-auto px-4 py-24 text-center space-y-4">
+    return <div className="bg-white dark:bg-neutral-900 min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-4">
         <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Catalog Entry Unresolved</h2>
         <p className="text-xs text-neutral-500">The product identifier requested is missing or has been redacted by inventory administrators.</p>
         <button onClick={() => setTab("products")} className="rounded-full bg-black dark:bg-white text-white dark:text-black font-semibold text-xs px-6 py-2.5">
           Return to Catalog
         </button>
-      </div>;
+      </div>
+    </div>;
   }
   return <div className="bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 min-h-screen transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 sm:space-y-12 lg:space-y-16">

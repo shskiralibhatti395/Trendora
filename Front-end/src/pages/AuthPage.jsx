@@ -16,9 +16,34 @@ export const AuthPage = ({ setTab }) => {
   const [newPassword, setNewPassword] = useState("");
   const [outboxOtp, setOutboxOtp] = useState(null);
   const [outboxEmail, setOutboxEmail] = useState("");
+  const [adminEmail, setAdminEmail] = useState("");
+  const [adminPass, setAdminPass] = useState("");
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    if (activeMode === "admin-login") {
+      if (!adminEmail || !adminPass) {
+        showToast("Admin email and password required", "error");
+        setLoading(false);
+        return;
+      }
+      const result = await login(adminEmail, adminPass);
+      if (result?.success) {
+        if (result.user?.role === "admin") {
+          showToast("Welcome Admin!", "success");
+          setTab("admin");
+        } else {
+          showToast("Not an admin account", "error");
+          setTab("home");
+        }
+      } else {
+        showToast("Invalid admin credentials", "error");
+      }
+      setLoading(false);
+      return;
+    }
+
     const trimmedEmail = email.trim();
     if (!trimmedEmail) {
       showToast("Please specify your account email address.", "error");
@@ -407,6 +432,38 @@ export const AuthPage = ({ setTab }) => {
               </div>
             </div>}
 
+          {activeMode === "admin-login" && <>
+            <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 text-center">
+              <p className="text-xs font-bold text-amber-600 dark:text-amber-400">Only For Admin</p>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-neutral-455 uppercase tracking-widest font-mono">Admin Email</label>
+              <div className="relative">
+                <input
+    type="email"
+    placeholder="admin@trendora.com"
+    value={adminEmail}
+    onChange={(e) => setAdminEmail(e.target.value)}
+    className="w-full rounded-xl px-3.5 py-2.5 pl-10 font-medium transition-colors custom-input"
+  />
+                <Mail className="absolute left-3.5 top-3 w-4.5 text-neutral-405" />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-neutral-455 uppercase tracking-widest font-mono">Admin Password</label>
+              <div className="relative">
+                <input
+    type="password"
+    placeholder="Enter admin password"
+    value={adminPass}
+    onChange={(e) => setAdminPass(e.target.value)}
+    className="w-full rounded-xl px-3.5 py-2.5 pl-10 pr-10 font-medium transition-colors custom-input"
+  />
+                <Key className="absolute left-3.5 top-3 w-4.5 text-neutral-405" />
+              </div>
+            </div>
+          </>}
+
           <button
     type="submit"
     disabled={loading}
@@ -420,6 +477,7 @@ export const AuthPage = ({ setTab }) => {
                 {activeMode === "forgot" && "Send Security Reset Code"}
                 {activeMode === "reset-password" && "Submit New Password"}
                 {activeMode === "verify-email" && "Verify Account Activation"}
+                {activeMode === "admin-login" && "Verify Admin Credentials"}
               </>}
           </button>
 
@@ -478,7 +536,7 @@ export const AuthPage = ({ setTab }) => {
             <div className="flex justify-start">
               <button
     type="button"
-    onClick={() => setActiveMode("login")}
+    onClick={() => setActiveMode("admin-login")}
     className="py-2.5 px-4 border border-amber-200/50 dark:border-amber-951/30 bg-amber-400/5 text-amber-600 dark:text-amber-450 rounded-xl hover:bg-amber-400/10 transition font-bold text-[11px] text-center"
   >
                 Sign In Admin
