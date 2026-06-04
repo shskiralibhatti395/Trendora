@@ -80,15 +80,19 @@ async function seed() {
     process.stdout.write("Seeded products\n");
   }
 
-  let admin = await User.findOne({ email: "admin@trendora.com" });
+  let admin = await User.findOne({ email: "admin@trendora.com" }).select("+password");
   if (!admin) {
     admin = await User.create({
       name: "Trendora Admin",
       email: "admin@trendora.com",
-      password: await bcrypt.hash("admin123", 10),
+      password: await bcrypt.hash("Asdf@295", 10),
       role: ROLES.ADMIN,
     });
-    process.stdout.write("Seeded admin (admin@trendora.com / admin123)\n");
+    process.stdout.write("Seeded admin (admin@trendora.com / Asdf@295)\n");
+  } else {
+    admin.password = await bcrypt.hash("Asdf@295", 10);
+    await admin.save();
+    process.stdout.write("Updated admin password (admin@trendora.com / Asdf@295)\n");
   }
 
   let user = await User.findOne({ email: "user@trendora.com" });
