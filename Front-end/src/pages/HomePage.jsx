@@ -175,7 +175,7 @@ export const HomePage = ({ setTab, setSelectedProductId }) => {
           <div className="p-5 rounded-2xl border border-indigo-500/10 dark:border-indigo-500/15 bg-indigo-500/[0.03] dark:bg-indigo-950/10 hover:bg-indigo-500/[0.06] dark:hover:bg-indigo-950/15 flex flex-col gap-3 transition duration-200">
             <div className="h-32 w-full rounded-xl overflow-hidden relative shadow-inner mb-1 bg-neutral-100 dark:bg-neutral-800">
               <img
-    src="https://images.unsplash.com/photo-1563013544-824ae1d704d3?w=500&auto=format&fit=crop&q=80"
+    src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=500&auto=format&fit=crop&q=80"
     alt="Realistic Payment Gateway Simulation"
     className="w-full h-full object-cover select-none"
     referrerPolicy="no-referrer"
