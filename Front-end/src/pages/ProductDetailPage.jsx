@@ -18,19 +18,22 @@ export const ProductDetailPage = ({
   const [ratingInput, setRatingInput] = useState(5);
   const [commentInput, setCommentInput] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
+  const [apiError, setApiError] = useState("");
   const fetchProductDetail = async () => {
     setIsLoading(true);
+    setApiError("");
     try {
       const data = await productService.getProductById(productId);
       setProduct(data.product);
       setRelatedProducts(data.related || []);
       if (data.product) {
-        setActiveImage(data.product.images[0]);
-        setSelectedColor(data.product.colors[0]);
-        setSelectedSize(data.product.sizes[0]);
+        setActiveImage(data.product.images?.[0] || "");
+        setSelectedColor(data.product.colors?.[0] || "");
+        setSelectedSize(data.product.sizes?.[0] || "");
       }
     } catch (e) {
       console.error(e);
+      setApiError(e.message || "Failed to load product");
     } finally {
       setIsLoading(false);
     }
@@ -39,6 +42,8 @@ export const ProductDetailPage = ({
     if (productId) {
       fetchProductDetail();
       setQuantity(1);
+    } else {
+      setIsLoading(false);
     }
   }, [productId]);
   const handleAddToCart = () => {
@@ -47,7 +52,7 @@ export const ProductDetailPage = ({
   };
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    if (!token) {
+    if (!user) {
       showToast("Please sign in to write product reviews.", "error");
       setTab("auth");
       return;
@@ -65,32 +70,32 @@ export const ProductDetailPage = ({
       fetchProductDetail();
     } catch (err) {
       console.error(err);
-      showToast(e.message || "Network issue submitting reviews.", "error");
+      showToast(err.message || "Network issue submitting reviews.", "error");
     } finally {
       setSubmittingReview(false);
     }
   };
   if (isLoading) {
-    return <div className="bg-white dark:bg-neutral-900 min-h-screen">
+    return <div className="bg-neutral-100 dark:bg-neutral-900 min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 animate-pulse space-y-8">
-        <div className="h-6 bg-neutral-200 dark:bg-neutral-800 rounded w-24" />
+        <div className="h-6 bg-neutral-300 dark:bg-neutral-800 rounded w-24" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div className="aspect-square bg-neutral-200 dark:bg-neutral-800 rounded-3xl" />
+          <div className="aspect-square bg-neutral-300 dark:bg-neutral-800 rounded-3xl" />
           <div className="space-y-6">
-            <div className="h-8 bg-neutral-200 dark:bg-neutral-800 rounded w-3/4" />
-            <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded w-1/4" />
-            <div className="h-20 bg-neutral-200 dark:bg-neutral-800 rounded w-full" />
-            <div className="h-10 bg-neutral-200 dark:bg-neutral-800 rounded w-1/3" />
+            <div className="h-8 bg-neutral-300 dark:bg-neutral-800 rounded w-3/4" />
+            <div className="h-4 bg-neutral-300 dark:bg-neutral-800 rounded w-1/4" />
+            <div className="h-20 bg-neutral-300 dark:bg-neutral-800 rounded w-full" />
+            <div className="h-10 bg-neutral-300 dark:bg-neutral-800 rounded w-1/3" />
           </div>
         </div>
       </div>
     </div>;
   }
   if (!product) {
-    return <div className="bg-white dark:bg-neutral-900 min-h-screen flex items-center justify-center">
+    return <div className="bg-neutral-100 dark:bg-neutral-900 min-h-screen flex items-center justify-center">
         <div className="text-center space-y-4">
-        <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Catalog Entry Unresolved</h2>
-        <p className="text-xs text-neutral-500">The product identifier requested is missing or has been redacted by inventory administrators.</p>
+        <h2 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">{apiError || "Catalog Entry Unresolved"}</h2>
+        <p className="text-xs text-neutral-500">The product you are looking for could not be loaded.</p>
         <button onClick={() => setTab("products")} className="rounded-full bg-black dark:bg-white text-white dark:text-black font-semibold text-xs px-6 py-2.5">
           Return to Catalog
         </button>
@@ -379,9 +384,9 @@ export const ProductDetailPage = ({
                 <div className="space-y-1">
                   <textarea
     rows={3}
-    placeholder={token ? "Describe your user experience in detail..." : "Sign in to write a review"}
+    placeholder={user ? "Describe your user experience in detail..." : "Sign in to write a review"}
     value={commentInput}
-    disabled={!token}
+    disabled={!user}
     onChange={(e) => setCommentInput(e.target.value)}
     className="w-full text-xs p-3 rounded-xl border border-gray-250 dark:border-neutral-700 bg-white dark:bg-neutral-900 focus:ring-1 focus:ring-amber-500 focus:outline-none disabled:bg-neutral-50 dark:disabled:bg-neutral-800 text-neutral-900 dark:text-white"
   />
@@ -389,7 +394,7 @@ export const ProductDetailPage = ({
 
                 <button
     type="submit"
-    disabled={submittingReview || !token}
+    disabled={submittingReview || !user}
     className="rounded-full bg-neutral-900 dark:bg-white text-white dark:text-black font-semibold text-xs px-6 py-2.5 hover:opacity-85 transition disabled:opacity-40"
   >
                   {submittingReview ? "Signing..." : "Post Verified Review"}
