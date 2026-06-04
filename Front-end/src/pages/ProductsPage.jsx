@@ -28,6 +28,7 @@ export const ProductsPage = ({
   const [hasMore, setHasMore] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [localSearch, setLocalSearch] = useState(searchKeyword);
+  const API_BASE = import.meta.env.VITE_API_URL || "";
   useEffect(() => {
     setLocalSearch(searchKeyword);
   }, [searchKeyword]);
@@ -51,7 +52,7 @@ export const ProductsPage = ({
       const pageToLoad = isAppend ? page + 1 : 1;
       qParams.set("page", String(pageToLoad));
       qParams.set("limit", "8");
-      const res = await fetch(`/api/products?${qParams.toString()}`);
+      const res = await fetch(`${API_BASE}/api/products?${qParams.toString()}`);
       if (res.ok) {
         const data = await res.json();
         if (isAppend) {
