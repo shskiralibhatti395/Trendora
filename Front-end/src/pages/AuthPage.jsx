@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useStore } from "../context/StoreContext.jsx";
 import { authService } from "../services/authService.js";
-import { Key, Mail, User, Sparkles, ArrowLeft, RefreshCw, Smartphone, KeyRound, Eye, EyeOff } from "lucide-react";
+import { Key, Mail, User, Sparkles, ArrowLeft, RefreshCw, Smartphone, KeyRound, Eye, EyeOff, X } from "lucide-react";
 export const AuthPage = ({ setTab }) => {
   const { login, register, showToast } = useStore();
   const [fieldErrors, setFieldErrors] = useState({});
@@ -16,34 +16,13 @@ export const AuthPage = ({ setTab }) => {
   const [newPassword, setNewPassword] = useState("");
   const [outboxOtp, setOutboxOtp] = useState(null);
   const [outboxEmail, setOutboxEmail] = useState("");
+  const [showAdminModal, setShowAdminModal] = useState(false);
   const [adminEmail, setAdminEmail] = useState("");
   const [adminPass, setAdminPass] = useState("");
+  const [adminLoading, setAdminLoading] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    if (activeMode === "admin-login") {
-      if (!adminEmail || !adminPass) {
-        showToast("Admin email and password required", "error");
-        setLoading(false);
-        return;
-      }
-      const result = await login(adminEmail, adminPass);
-      if (result?.success) {
-        if (result.user?.role === "admin") {
-          showToast("Welcome Admin!", "success");
-          setTab("admin");
-        } else {
-          showToast("Not an admin account", "error");
-          setTab("home");
-        }
-      } else {
-        showToast("Invalid admin credentials", "error");
-      }
-      setLoading(false);
-      return;
-    }
-
     const trimmedEmail = email.trim();
     if (!trimmedEmail) {
       showToast("Please specify your account email address.", "error");
@@ -432,38 +411,6 @@ export const AuthPage = ({ setTab }) => {
               </div>
             </div>}
 
-          {activeMode === "admin-login" && <>
-            <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 text-center">
-              <p className="text-xs font-bold text-amber-600 dark:text-amber-400">Only For Admin</p>
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-neutral-455 uppercase tracking-widest font-mono">Admin Email</label>
-              <div className="relative">
-                <input
-    type="email"
-    placeholder="admin@trendora.com"
-    value={adminEmail}
-    onChange={(e) => setAdminEmail(e.target.value)}
-    className="w-full rounded-xl px-3.5 py-2.5 pl-10 font-medium transition-colors custom-input"
-  />
-                <Mail className="absolute left-3.5 top-3 w-4.5 text-neutral-405" />
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-bold text-neutral-455 uppercase tracking-widest font-mono">Admin Password</label>
-              <div className="relative">
-                <input
-    type="password"
-    placeholder="Enter admin password"
-    value={adminPass}
-    onChange={(e) => setAdminPass(e.target.value)}
-    className="w-full rounded-xl px-3.5 py-2.5 pl-10 pr-10 font-medium transition-colors custom-input"
-  />
-                <Key className="absolute left-3.5 top-3 w-4.5 text-neutral-405" />
-              </div>
-            </div>
-          </>}
-
           <button
     type="submit"
     disabled={loading}
@@ -477,7 +424,6 @@ export const AuthPage = ({ setTab }) => {
                 {activeMode === "forgot" && "Send Security Reset Code"}
                 {activeMode === "reset-password" && "Submit New Password"}
                 {activeMode === "verify-email" && "Verify Account Activation"}
-                {activeMode === "admin-login" && "Verify Admin Credentials"}
               </>}
           </button>
 
@@ -536,7 +482,7 @@ export const AuthPage = ({ setTab }) => {
             <div className="flex justify-start">
               <button
     type="button"
-    onClick={() => setActiveMode("admin-login")}
+    onClick={() => { setShowAdminModal(true); setAdminEmail(""); setAdminPass(""); }}
     className="py-2.5 px-4 border border-amber-200/50 dark:border-amber-951/30 bg-amber-400/5 text-amber-600 dark:text-amber-450 rounded-xl hover:bg-amber-400/10 transition font-bold text-[11px] text-center"
   >
                 Sign In Admin
@@ -545,6 +491,76 @@ export const AuthPage = ({ setTab }) => {
           </div>}
 
       </div>
+
+      {showAdminModal && <div style={{
+        position: "fixed", inset: 0, zIndex: 9999,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        backgroundColor: "rgba(0,0,0,0.6)"
+      }}>
+        <div style={{
+          background: "#fff", borderRadius: 16, padding: 32, width: 380,
+          maxWidth: "90vw", boxShadow: "0 20px 60px rgba(0,0,0,0.3)"
+        }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+            <h2 style={{ fontSize: 18, fontWeight: 800, color: "#d97706" }}>Only For Admin</h2>
+            <button onClick={() => setShowAdminModal(false)} style={{
+              background: "none", border: "none", cursor: "pointer", color: "#999", fontSize: 20
+            }}><X size={20} /></button>
+          </div>
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 6 }}>Admin Email</label>
+            <input
+              type="email" placeholder="admin@trendora.com"
+              value={adminEmail}
+              onChange={(e) => setAdminEmail(e.target.value)}
+              style={{
+                width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #ddd",
+                fontSize: 14, outline: "none", boxSizing: "border-box"
+              }}
+            />
+          </div>
+          <div style={{ marginBottom: 24 }}>
+            <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 6 }}>Password</label>
+            <input
+              type="password" placeholder="Enter admin password"
+              value={adminPass}
+              onChange={(e) => setAdminPass(e.target.value)}
+              style={{
+                width: "100%", padding: "10px 14px", borderRadius: 10, border: "1px solid #ddd",
+                fontSize: 14, outline: "none", boxSizing: "border-box"
+              }}
+            />
+          </div>
+          <button
+            onClick={async () => {
+              if (!adminEmail || !adminPass) { showToast("Email and password required", "error"); return; }
+              setAdminLoading(true);
+              const result = await login(adminEmail, adminPass);
+              setAdminLoading(false);
+              if (result?.success) {
+                if (result.user?.role === "admin") {
+                  showToast("Welcome Admin!", "success");
+                  setShowAdminModal(false);
+                  setTab("admin");
+                } else {
+                  showToast("Not an admin account", "error");
+                }
+              } else {
+                showToast("Invalid admin credentials", "error");
+              }
+            }}
+            disabled={adminLoading}
+            style={{
+              width: "100%", padding: "12px 0", borderRadius: 10, border: "none",
+              background: adminLoading ? "#ccc" : "#d97706", color: "#fff",
+              fontSize: 13, fontWeight: 700, cursor: adminLoading ? "not-allowed" : "pointer",
+              letterSpacing: 1
+            }}
+          >
+            {adminLoading ? "Verifying..." : "Verify Admin Credentials"}
+          </button>
+        </div>
+      </div>}
 
     </div>;
 };
