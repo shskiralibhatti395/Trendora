@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { authService } from "../services/authService.js";
 import { cartService } from "../services/cartService.js";
-import { apiFetch } from "../services/api.js";
+import { apiFetch, setToken, clearToken } from "../services/api.js";
 
 const StoreContext = createContext(undefined);
 
@@ -98,21 +98,26 @@ export const StoreProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const data = await authService.login(email, password);
+      if (data.token) setToken(data.token);
       setUser(data.user);
-      cartSyncReady.current = false;
-      wishlistSyncReady.current = false;
-      const [cartData, wishlistData] = await Promise.all([
-        cartService.getCart(),
-        cartService.getWishlist(),
-      ]);
-      setCart(cartData.cart || []);
-      setWishlist(wishlistData.wishlist || []);
+      showToast(`Welcome back, ${data.user.name}!`, "success");
+      try {
+        cartSyncReady.current = false;
+        wishlistSyncReady.current = false;
+        const [cartData, wishlistData] = await Promise.all([
+          cartService.getCart(),
+          cartService.getWishlist(),
+        ]);
+        setCart(cartData.cart || []);
+        setWishlist(wishlistData.wishlist || []);
+      } catch {
+        /* cart/wishlist fetch may race cookie set — Bearer token fixes this after deploy */
+      }
       cartSyncReady.current = true;
       wishlistSyncReady.current = true;
-      showToast(`Welcome back, ${data.user.name}!`, "success");
       return { success: true, user: data.user };
     } catch (err) {
-      showToast(err.message || "Login failed", "error");
+      showToast("Invalid email or password", "error");
       return false;
     }
   };
@@ -120,6 +125,7 @@ export const StoreProvider = ({ children }) => {
   const register = async (name, email, password) => {
     try {
       const data = await authService.register(name, email, password);
+      if (data.token) setToken(data.token);
       setUser(data.user);
       setCart([]);
       setWishlist([]);
@@ -134,6 +140,7 @@ export const StoreProvider = ({ children }) => {
   };
 
   const logout = async () => {
+    clearToken();
     try {
       await authService.logout();
     } catch {

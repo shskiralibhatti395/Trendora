@@ -93,7 +93,7 @@ export const CheckoutPage = ({ setTab, promoDiscountPrice, promoCodeApplied }) =
       setShowOtpModal(true);
       showToast("Order confirmation code sent to your email!", "success");
     } catch (e) {
-      showToast("Network issue sending security OTP.", "error");
+      showToast(e.message || "Network issue sending security OTP.", "error");
     } finally {
       setOtpLoading(false);
     }
@@ -123,7 +123,7 @@ export const CheckoutPage = ({ setTab, promoDiscountPrice, promoCodeApplied }) =
       showToast("Order created successfully!", "success");
     } catch (e) {
       console.error(e);
-      showToast("Network issue placing your order.", "error");
+      showToast(e.message || "Network issue placing your order.", "error");
     }
   };
   const handlePaymentTrigger = () => {

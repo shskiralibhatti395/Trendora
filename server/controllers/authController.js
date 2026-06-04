@@ -26,6 +26,7 @@ export const register = async (req, res, next) => {
 
     res.status(201).json({
       message: "Registration successful",
+      token,
       user: user.toSafeJSON(),
     });
   } catch (error) {
@@ -50,7 +51,7 @@ export const login = async (req, res, next) => {
     const token = generateToken(user._id);
     setTokenCookie(res, token);
 
-    res.json({ user: user.toSafeJSON() });
+    res.json({ token, user: user.toSafeJSON() });
   } catch (error) {
     next(error);
   }

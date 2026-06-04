@@ -65,7 +65,7 @@ export const ProductDetailPage = ({
       fetchProductDetail();
     } catch (err) {
       console.error(err);
-      showToast("Network issue submitting reviews.", "error");
+      showToast(e.message || "Network issue submitting reviews.", "error");
     } finally {
       setSubmittingReview(false);
     }
