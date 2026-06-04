@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useStore } from "../context/StoreContext.jsx";
+import { productService } from "../services/productService.js";
 import { ArrowRight, Sparkles, ShieldCheck, Truck, Zap, ShoppingCart, Heart } from "lucide-react";
 const HERO_SLIDES = [
   {
@@ -41,12 +42,9 @@ export const HomePage = ({ setTab, setSelectedProductId }) => {
   useEffect(() => {
     async function loadFeatured() {
       try {
-        const res = await fetch("/api/products");
-        if (res.ok) {
-          const data = await res.json();
-          const items = data.products.slice(0, 4);
-          setFeaturedProducts(items);
-        }
+        const data = await productService.getProducts();
+        const items = data.products.slice(0, 4);
+        setFeaturedProducts(items);
       } catch (e) {
         console.error(e);
       } finally {

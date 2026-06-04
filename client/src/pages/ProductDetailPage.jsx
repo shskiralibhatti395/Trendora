@@ -21,16 +21,13 @@ export const ProductDetailPage = ({
   const fetchProductDetail = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/products/${productId}`);
-      if (res.ok) {
-        const data = await res.json();
-        setProduct(data.product);
-        setRelatedProducts(data.related || []);
-        if (data.product) {
-          setActiveImage(data.product.images[0]);
-          setSelectedColor(data.product.colors[0]);
-          setSelectedSize(data.product.sizes[0]);
-        }
+      const data = await productService.getProductById(productId);
+      setProduct(data.product);
+      setRelatedProducts(data.related || []);
+      if (data.product) {
+        setActiveImage(data.product.images[0]);
+        setSelectedColor(data.product.colors[0]);
+        setSelectedSize(data.product.sizes[0]);
       }
     } catch (e) {
       console.error(e);
