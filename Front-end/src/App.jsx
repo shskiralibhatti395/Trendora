@@ -19,17 +19,20 @@ function AppContent() {
   const { toasts, dismissToast, user, isLoading } = useStore();
   const [tab, setTab] = useState("home");
   const [selectedProductId, setSelectedProductId] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [promoDiscountPrice, setPromoDiscountPrice] = useState(0);
   const [promoCodeApplied, setPromoCodeApplied] = useState("");
   const renderActiveTab = () => {
     switch (tab) {
       case "home":
-        return <HomePage setTab={setTab} setSelectedProductId={setSelectedProductId} />;
+        return <HomePage setTab={setTab} setSelectedProductId={setSelectedProductId} setSelectedCategory={setSelectedCategory} />;
       case "products":
         return <ProductsPage
           setTab={setTab}
           setSelectedProductId={setSelectedProductId}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
           searchKeyword={searchKeyword}
           setSearchKeyword={setSearchKeyword}
         />;

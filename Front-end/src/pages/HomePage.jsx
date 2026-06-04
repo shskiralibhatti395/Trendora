@@ -28,7 +28,7 @@ const HERO_SLIDES = [
     category: "Tech"
   }
 ];
-export const HomePage = ({ setTab, setSelectedProductId }) => {
+export const HomePage = ({ setTab, setSelectedProductId, setSelectedCategory }) => {
   const { addToCart, toggleWishlist, isInWishlist } = useStore();
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -227,10 +227,10 @@ export const HomePage = ({ setTab, setSelectedProductId }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div
-    onClick={() => setTab("products")}
+    onClick={() => { setSelectedCategory("Fashion"); setTab("products"); }}
     className="relative h-64 rounded-2xl overflow-hidden group cursor-pointer shadow-sm"
   >
-              <div className="absolute inset-0 bg-neutral-950/40 group-hover:bg-neutral-900/30 transition-colors z-10" />
+               <div className="absolute inset-0 bg-neutral-950/40 group-hover:bg-neutral-900/30 transition-colors z-10" />
               <img
     src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&auto=format&fit=crop&q=80"
     alt="Apparel Category"
@@ -247,7 +247,7 @@ export const HomePage = ({ setTab, setSelectedProductId }) => {
             </div>
 
             <div
-    onClick={() => setTab("products")}
+    onClick={() => { setSelectedCategory("Tech"); setTab("products"); }}
     className="relative h-64 rounded-2xl overflow-hidden group cursor-pointer shadow-sm"
   >
               <div className="absolute inset-0 bg-neutral-950/40 group-hover:bg-neutral-900/30 transition-colors z-10" />
@@ -267,7 +267,7 @@ export const HomePage = ({ setTab, setSelectedProductId }) => {
             </div>
 
             <div
-    onClick={() => setTab("products")}
+    onClick={() => { setSelectedCategory("Workspace"); setTab("products"); }}
     className="relative h-64 rounded-2xl overflow-hidden group cursor-pointer shadow-sm md:col-span-1"
   >
               <div className="absolute inset-0 bg-neutral-950/40 group-hover:bg-neutral-900/30 transition-colors z-10" />

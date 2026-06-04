@@ -9,6 +9,8 @@ const SIZES = ["All", "Standard", "S", "M", "L", "XL", "38mm", "42mm", "60% Layo
 export const ProductsPage = ({
   setTab,
   setSelectedProductId,
+  selectedCategory,
+  setSelectedCategory,
   searchKeyword,
   setSearchKeyword
 }) => {
@@ -29,6 +31,12 @@ export const ProductsPage = ({
   useEffect(() => {
     setLocalSearch(searchKeyword);
   }, [searchKeyword]);
+  useEffect(() => {
+    if (selectedCategory) {
+      setCategory(selectedCategory);
+      setSelectedCategory("");
+    }
+  }, [selectedCategory]);
   const loadProducts = async (isAppend = false) => {
     setIsLoading(true);
     try {
