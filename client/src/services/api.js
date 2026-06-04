@@ -1,7 +1,7 @@
 const API_BASE = import.meta.env.VITE_API_URL || "";
 
 export async function apiFetch(path, options = {}) {
-  const finalPath = path.startsWith("/api") ? path : `/api${path}`;
+  const finalPath = "/api/" + path.replace(/^\/?(api\/?)?/, "");
 
   const headers = {
     ...(options.body ? { "Content-Type": "application/json" } : {}),
