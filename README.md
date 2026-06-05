@@ -17,7 +17,7 @@
 ---
 
 ## 📸 Screenshots
-
+![alt text](dks.png)
 > **Live Demo:** [https://trendora-pi.vercel.app](https://trendora-pi.vercel.app)
 
 | Storefront | Admin Dashboard |
