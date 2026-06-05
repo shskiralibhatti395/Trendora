@@ -763,50 +763,6 @@ Virtual field: `id` (returns legacyId or _id)
 
 ---
 
-## 10. Important Viva Questions & Answers
-
-**Q: What is your project about?**
-A: Trendora is a full-stack e-commerce web application. Users can browse products, search and filter them, add items to cart and wishlist, and place orders with simulated payment methods (Card, PayPal, Crypto, COD). The admin can manage products, orders, and users through a dedicated dashboard.
-
-**Q: What tech stack did you use and why?**
-A: I used the MERN stack — MongoDB for database (flexible schema for product variants), Express.js and Node.js for the backend API server, and React for the frontend UI. I used Vite as the build tool (faster than Create React App), Tailwind CSS for styling (utility-first, rapid development), JWT for authentication, and bcryptjs for password hashing.
-
-**Q: How does authentication work?**
-A: When a user logs in, the server creates a JSON Web Token (JWT) containing the user's ID, signed with a secret key and set to expire in 7 days. This token is sent back to the frontend, which stores it in memory and sends it with every API request via the Authorization header as a Bearer token. The server middleware verifies the token on every protected route to identify the user.
-
-**Q: How did you handle security?**
-A: I implemented multiple security measures:
-1. Passwords are hashed with bcrypt (10 salt rounds) before storage
-2. JWT tokens for authentication (stateless, no session to steal)
-3. helmet middleware sets HTTP security headers (XSS, content-type sniffing, etc.)
-4. express-rate-limit prevents brute-force attacks on auth routes
-5. express-mongo-sanitize prevents NoSQL injection attacks
-6. express-validator ensures all inputs are properly validated
-7. HTTP-only cookies prevent XSS token theft in production
-
-**Q: How is the project structured?**
-A: The project has three main folders. Back-end contains the Express.js API server with models, controllers, routes, middleware, and utilities. Front-end contains the React storefront with pages, components, services, and context for global state. Admin-panel is a separate React app for admin functions like product and user management.
-
-**Q: What are the main pages/features?**
-A: The main pages are Home (with hero carousel, featured products, category cards), Products (searchable, filterable grid), Product Detail (full info, reviews, related products), Cart, Checkout (3-step with payment simulation), Profile (orders, wishlist, settings), and Auth (login, register, password reset). The admin dashboard has stats, charts, and CRUD tables for products, orders, and users.
-
-**Q: How do payments work?**
-A: Payments are simulated for demonstration. We have four methods: Credit/Debit Card (mock Razorpay modal), PayPal (mock PayPal modal), Cryptocurrency (mock blockchain with USDT/BTC/ETH), and Cash on Delivery. After payment, the server sends a 6-digit OTP to the user's email for verification before the order is finalized.
-
-**Q: How is data stored?**
-A: We use MongoDB Atlas (cloud database). Data is organized into four collections: users (with embedded cart and address), products (with embedded reviews), orders (with embedded items and shipping address), and notifications. Mongoose provides schema validation and data modeling.
-
-**Q: How did you deploy the project?**
-A: The frontend is deployed on Vercel, which automatically builds and deploys when we push to the main branch. The backend is deployed on Render with a start command that runs the seed script followed by the server. The admin panel is a separate Vercel deployment. All deployment is automated via Git - code push triggers auto-deploy.
-
-**Q: What challenges did you face?**
-A: One challenge was CORS issues between the Vercel-hosted frontend and Render-hosted backend — we configured CORS middleware to allow specific origins. Another was authentication — we had to support both cookie-based and Bearer token auth for compatibility. Cart persistence across sessions was also tricky — we save cart data to the user's MongoDB document and sync on login.
-
-**Q: What would you improve if you had more time?**
-A: I would integrate real payment gateways (Razorpay/PayPal), upload product images to cloud storage (Cloudinary/S3) instead of URLs, implement real-time notifications using WebSockets (Socket.io), add unit and integration tests, improve mobile responsiveness, and add a product recommendation engine.
-
----
-
 ## 11. How to Run Locally
 
 ```bash
