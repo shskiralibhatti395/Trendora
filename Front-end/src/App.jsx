@@ -122,7 +122,7 @@ function AppContent() {
       {
     /* Core Active views layouts */
   }
-      <main className="flex-grow">
+      <main className="grow">
         {renderActiveTab()}
       </main>
 
