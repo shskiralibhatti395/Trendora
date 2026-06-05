@@ -53,6 +53,37 @@
 
 ---
 
+## 🎨 Color Scheme
+
+### Brand Colors
+| Color | Tailwind | Hex | Usage |
+|---|---|---|---|
+| **Light** | `bg-white` / `text-neutral-900` | — | Light mode page background / primary text |
+| **Dark** | `bg-neutral-900` / `text-neutral-100` | — | Dark mode background / primary text |
+| **Accent** | `amber-500` | `#f59e0b` | Buttons, links, star ratings, icons, CTAs, range slider |
+| **Success** | `emerald-500` | `#10b981` | Free shipping, success toasts, order status badges |
+| **Error** | `red-500` | `#ef4444` | Error toasts, out of stock, delete actions, wishlist heart |
+| **Surfaces** | `neutral-50` to `neutral-950` | — | Cards, modals, sections, footers, skeleton loaders |
+| **Charts** | amber / emerald / blue / pink | `#fbbf24` `#10b981` `#3b82f6` `#ec4899` | Admin dashboard bar chart & area chart |
+
+### Dark Mode Mapping
+| Light | Dark |
+|---|---|
+| `bg-white` | `bg-neutral-900` |
+| `bg-gray-50` / `bg-neutral-50` | `bg-neutral-950` / `bg-neutral-900` |
+| `text-neutral-900` | `text-neutral-100` |
+| `text-neutral-500` | `text-neutral-400` |
+| `border-neutral-200` | `border-neutral-800` |
+
+### Payment Method Colors
+| Method | Header | Button |
+|---|---|---|
+| Card (Razorpay) | `bg-slate-900` | `amber-500` |
+| PayPal | `#003087` | `#0070ba` / `#005ea6` |
+| Crypto (USDT) | `bg-purple-950` | `purple-600` / `purple-700` |
+
+---
+
 ## 🛠️ Tech Stack
 
 ### Backend
