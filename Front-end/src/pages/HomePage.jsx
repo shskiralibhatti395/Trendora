@@ -33,24 +33,28 @@ export const HomePage = ({ setTab, setSelectedProductId, setSelectedCategory }) 
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [activeSlide, setActiveSlide] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [featuredError, setFeaturedError] = useState(null);
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveSlide((p) => (p + 1) % HERO_SLIDES.length);
     }, 6e3);
     return () => clearInterval(timer);
   }, []);
-  useEffect(() => {
-    async function loadFeatured() {
-      try {
-        const data = await productService.getProducts();
-        const items = data.products.slice(0, 4);
-        setFeaturedProducts(items);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setIsLoading(false);
-      }
+  async function loadFeatured() {
+    setIsLoading(true);
+    setFeaturedError(null);
+    try {
+      const data = await productService.getProducts();
+      const items = (data.products || []).slice(0, 4);
+      setFeaturedProducts(items);
+    } catch (e) {
+      console.error(e);
+      setFeaturedError(e.message || "Failed to load products");
+    } finally {
+      setIsLoading(false);
     }
+  }
+  useEffect(() => {
     loadFeatured();
   }, []);
   const handleProductClick = (productId) => {
@@ -312,7 +316,17 @@ export const HomePage = ({ setTab, setSelectedProductId, setSelectedCategory }) 
                   <div className="h-4 bg-neutral-200 dark:bg-neutral-800 rounded w-2/3" />
                   <div className="h-3 bg-neutral-200 dark:bg-neutral-800 rounded w-1/2" />
                 </div>)}
-            </div> : <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            </div> : featuredError ? <div className="text-center py-16 space-y-4">
+                <p className="text-neutral-500 dark:text-neutral-400 text-sm">{featuredError}</p>
+                <button
+      onClick={loadFeatured}
+      className="rounded-full bg-neutral-900 dark:bg-white text-white dark:text-black text-xs font-bold px-6 py-3 hover:opacity-85 transition"
+    >
+                  Retry
+                </button>
+              </div> : featuredProducts.length === 0 ? <div className="text-center py-16">
+                <p className="text-neutral-500 dark:text-neutral-400 text-sm">No featured products available at the moment.</p>
+              </div> : <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
               {featuredProducts.map((prod) => <div
     key={prod.id}
     className="group relative rounded-2xl border border-gray-100 dark:border-neutral-800/40 bg-white dark:bg-neutral-950 p-3 shadow-none hover:shadow-lg transition-transform duration-300 hover:-translate-y-1 flex flex-col h-full"
