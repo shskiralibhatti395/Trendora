@@ -2,7 +2,8 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { StoreProvider, useStore } from "./context/StoreContext.jsx";
 import { Header } from "./components/Header.jsx";
 import { Footer } from "./components/Footer.jsx";
@@ -14,9 +15,30 @@ import { CheckoutPage } from "./pages/CheckoutPage.jsx";
 import { ProfilePage } from "./pages/ProfilePage.jsx";
 import { AuthPage } from "./pages/AuthPage.jsx";
 import { AdminDashboard } from "./pages/AdminDashboard.jsx";
-import { CheckCircle, AlertOctagon, Info, X } from "lucide-react";
+import { CheckCircle, AlertOctagon, Info, X, Server, Loader } from "lucide-react";
+const API_BASE = import.meta.env.VITE_API_URL || "";
 function AppContent() {
   const { toasts, dismissToast, user, isLoading } = useStore();
+  const [backendReady, setBackendReady] = useState(false);
+  const [backendChecking, setBackendChecking] = useState(true);
+  useEffect(() => {
+    let cancelled = false;
+    async function check() {
+      while (!cancelled) {
+        try {
+          const res = await fetch(`${API_BASE}/api/health`);
+          if (res.ok && !cancelled) {
+            setBackendReady(true);
+            setBackendChecking(false);
+            return;
+          }
+        } catch (_) {}
+        if (!cancelled) await new Promise((r) => setTimeout(r, 4000));
+      }
+    }
+    check();
+    return () => { cancelled = true; };
+  }, []);
   const [tab, setTab] = useState("home");
   const [selectedProductId, setSelectedProductId] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -81,10 +103,28 @@ function AppContent() {
         return <HomePage setTab={setTab} setSelectedProductId={setSelectedProductId} />;
       default:
         return <HomePage setTab={setTab} setSelectedProductId={setSelectedProductId} />;
-    }
+      }
   };
+  if (backendChecking) {
+    return <div className="min-h-screen bg-neutral-950 flex flex-col items-center justify-center text-center gap-6 px-4">
+        <div className="relative">
+          <div className="h-14 w-14 border-2 border-neutral-800 border-t-amber-500 rounded-full animate-spin" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Server size={18} className="text-amber-500/60" />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <p className="text-sm font-semibold text-neutral-200">Connecting to Trendora Server</p>
+          <p className="text-xs text-neutral-500 max-w-xs">Waking up the backend — this may take 30–60 seconds on first load.</p>
+        </div>
+        <div className="flex items-center gap-2 text-[10px] text-neutral-600 font-mono">
+          <Loader size={10} className="animate-spin" />
+          {backendReady ? "Connected" : "Establishing secure link..."}
+        </div>
+      </div>;
+  }
   if (isLoading) {
-    return <div className="min-h-screen bg-neutral-900 border-neutral-300 flex flex-col items-center justify-center text-center gap-4">
+    return <div className="min-h-screen bg-neutral-900 flex flex-col items-center justify-center text-center gap-4">
         <div className="h-10 w-10 border-2 border-neutral-700 border-t-white rounded-full animate-spin" />
         <p className="text-xs text-neutral-400 font-medium">Securing Trendora Session Keys...</p>
       </div>;
